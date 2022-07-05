@@ -17,6 +17,9 @@ class AppCtx:
         self.root = search_root()
         self.appdata = self._load_appdata()
 
+    def _list_registered(self):
+        return self.appdata['register']
+
     def register(self, path):
         # assertion
         path = os.path.abspath(path)
@@ -35,6 +38,23 @@ class AppCtx:
             return
         # register
         tmpdata['register'] += [relative_path]
+        print('register')
+        self._save_appdata(tmpdata)
+
+    def unregister(self, path):
+        # assertion
+        path = os.path.abspath(path)
+        assert os.path.isdir(path)
+        # relative path
+        relative_path = self._get_dataitem_path(path)
+        # check already registered
+        tmpdata = copy.deepcopy(self.appdata)
+        dataitem_list_registered = tmpdata['register']
+        if not relative_path in [e for e in dataitem_list_registered]:
+            print('not registered dir')
+            return
+        # unregister
+        tmpdata['register'].remove(relative_path)
         print('register')
         self._save_appdata(tmpdata)
 
