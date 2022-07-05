@@ -4,6 +4,9 @@ import os
 import sys
 import shutil
 import yaml
+from enum import Enum
+
+from config import *
 
 DSROOT = '.dstool'
 APPDATA = os.path.join(DSROOT, 'appdata.yaml')
@@ -12,13 +15,20 @@ DATADIR = 'data'
 
 DataItem = namedtuple('DataItem', ('path', 'img_dir', 'ann_dir'))
 
+#TODO: use it 
+class DataItemState(Enum):
+    ANNOTATED = 1
+    PARTIALLY_ANNOTATED = 2
+    NOT_ANNOTATED = 3
+
 class AppCtx:
     def __init__(self):
         self.root = search_root()
-        self.appdata = self._load_appdata()
+        # self.appdata = self._load_appdata()
+        self.appdata = AppConfig(self.root)
 
-    def _list_registered(self):
-        return self.appdata['register']
+    def list_registered_paths(self):
+        return [e["path"] for e in self.appdata.list_registered()]
 
     def register(self, path):
         # assertion
@@ -31,15 +41,13 @@ class AppCtx:
         if relative_path not in [e.path for e in dataitem_list]:
             raise Exception(f'Not DataItem dir: {path}')
         # check already registered
-        tmpdata = copy.deepcopy(self.appdata)
-        dataitem_list_registered = tmpdata['register']
+        dataitem_list_registered = self.list_registered_paths()
         if relative_path in [e for e in dataitem_list_registered]:
             print('already registered')
             return
         # register
-        tmpdata['register'] += [relative_path]
         print('register')
-        self._save_appdata(tmpdata)
+        self.appdata.add_dataitem(relative_path)
 
     def unregister(self, path):
         # assertion
@@ -49,14 +57,13 @@ class AppCtx:
         relative_path = self._get_dataitem_path(path)
         # check already registered
         tmpdata = copy.deepcopy(self.appdata)
-        dataitem_list_registered = tmpdata['register']
+        dataitem_list_registered = self.list_registered_paths()
         if not relative_path in [e for e in dataitem_list_registered]:
             print('not registered dir')
             return
         # unregister
-        tmpdata['register'].remove(relative_path)
         print('register')
-        self._save_appdata(tmpdata)
+        self.appdata.delete_dataitem(relative_path)
 
     def _save_appdata(self, data):
         tmp = os.path.join(self.root, APPDATA_TMP)

@@ -10,7 +10,7 @@ def command_status(arg):
     app = AppCtx()
     candidates = app._list_dataitem()
     candidates = [e.path for e in candidates]
-    registered = app._list_registered()
+    registered = app.list_registered_paths()
 
     # set op
     set_can = set(candidates)
@@ -45,6 +45,19 @@ def command_register(arg):
 def command_unregister(arg):
     app = AppCtx()
     app.unregister(arg.datadir)
+
+def command_mark(arg):
+    pass
+def command_unmark(arg):
+    pass
+def command_annotate(arg):
+    pass
+def command_export(arg):
+    pass
+def command_train(arg):
+    pass
+def command_auto_annotate(arg):
+    pass
 
 def main():
     parser = argparse.ArgumentParser(description='dstool command')
