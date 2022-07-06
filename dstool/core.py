@@ -124,7 +124,7 @@ def search_root():
         # update
         cur = newcur
     # error if not found
-    raise Exception('not dstool repo')
+    error_exit('not dstool repo')
 
 IMAGE_EXT_ARR = ['.jpg', '.png']
 
