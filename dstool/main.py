@@ -2,6 +2,7 @@ import argparse
 import os
 
 from dstool.common import *
+from dstool.core import *
 
 def command_init(arg):
     dsroot_init()

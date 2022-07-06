@@ -1,30 +1,30 @@
+""".dstool/ 下のファイルを管理する"""
 import os
 import yaml
 import shutil
 
-
-DSROOT = '.dstool'
-APPDATA = os.path.join(DSROOT, 'appdata.yaml')
-APPDATA_TMP = os.path.join(DSROOT, 'appdata.yaml.tmp')
+from dstool.common import *
 
 class AppConfig():
     def __init__(self, root):
         self.root = root
-        self.d = self._load()
+        self.regs = self._load()
 
     def list_registered(self):
-        return self.d["register"]
+        return self.regs
 
-    def add_dataitem(self, path):
-        assert type(self.d["register"]) is list
+    def add_dataitem(self, path, img_dir, ann_dir):
+        assert type(self.regs) is list
         toadd = {'path': path,
+                 'img_dir': img_dir,
+                 'ann_dir': ann_dir,
                  'mark': []}
-        self.d["register"] += [toadd]
+        self.regs += [toadd]
         self._save()
 
     def delete_dataitem(self, path : str):
         """delete item using relative_path from data/"""
-        before = self.d["register"] 
+        before = self.regs 
         indexes = [i for i, e in enumerate(before) if e["path"] == path]
         if len(indexes) > 1:
             raise Exception('Internal error')
@@ -39,14 +39,12 @@ class AppConfig():
             with open(yamlpath) as f:
                 obj = yaml.safe_load(f)
         except Exception as e:
-            print('Exception occurred while loading YAML...', file=sys.stderr)
-            print(e, file=sys.stderr)
-            sys.exit(1)
+            error_exit('Exception occurred while loading YAML: ' + e)
         return obj
 
     def _save(self):
         tmp = os.path.join(self.root, APPDATA_TMP)
         target = os.path.join(self.root, APPDATA)
         with open(tmp, 'w') as tmpfile:
-            yaml.dump(self.d, tmpfile)
+            yaml.dump(self.regs, tmpfile)
         shutil.move(tmp, target)
