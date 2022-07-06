@@ -48,9 +48,13 @@ def command_unregister(arg):
     app.unregister(arg.datadir)
 
 def command_mark(arg):
-    pass
+    app = AppCtx()
+    app.mark(arg.datadir, arg.markname)
+
 def command_unmark(arg):
-    pass
+    app = AppCtx()
+    app.unmark(arg.datadir, arg.markname)
+
 def command_annotate(arg):
     pass
 def command_export(arg):
@@ -78,6 +82,16 @@ def main():
     parser_add = subparsers.add_parser('unregister', help='see `unregister -h`')
     parser_add.add_argument('datadir', help='data dir')
     parser_add.set_defaults(handler=command_unregister)
+    # [subcommand] mark
+    parser_add = subparsers.add_parser('mark', help='see `mark -h`')
+    parser_add.add_argument('datadir', help='data dir')
+    parser_add.add_argument('markname', help='mark name')
+    parser_add.set_defaults(handler=command_mark)
+    # [subcommand] unmark
+    parser_add = subparsers.add_parser('unmark', help='see `unmark -h`')
+    parser_add.add_argument('datadir', help='data dir')
+    parser_add.add_argument('markname', help='mark name')
+    parser_add.set_defaults(handler=command_unmark)
 
     # コマンドライン引数をパースして対応するハンドラ関数を実行
     args = parser.parse_args()

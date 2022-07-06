@@ -1,14 +1,15 @@
+"""メインロジック"""
+
 from dstool.common import *
 from dstool.config import *
 
 class AppCtx:
     def __init__(self):
         self.root = search_root()
-        # self.appdata = self._load_appdata()
-        self.regs = AppConfig(self.root)
+        self.appdata = AppData(self.root)
 
     def list_registered_paths(self):
-        return [e["path"] for e in self.regs.list_registered()]
+        return [e["path"] for e in self.appdata.list_registered()]
 
     def register(self, path):
         # assertion
@@ -26,7 +27,7 @@ class AppCtx:
             error_exit('it is not dataitem dir')
         # register
         print('register')
-        self.regs.add_dataitem(relative_path, img_dir, ann_dir)
+        self.appdata.add_dataitem(relative_path, img_dir, ann_dir)
 
     def unregister(self, path):
         # assertion
@@ -35,38 +36,28 @@ class AppCtx:
         # relative path
         relative_path = self._get_dataitem_path(path)
         # check already registered
-        tmpdata = copy.deepcopy(self.regs)
+        tmpdata = copy.deepcopy(self.appdata)
         dataitem_list_registered = self.list_registered_paths()
         if not relative_path in [e for e in dataitem_list_registered]:
             print('not registered dir')
             return
         # unregister
         print('register')
-        self.regs.delete_dataitem(relative_path)
+        self.appdata.delete_dataitem(relative_path)
 
-    def _save_appdata(self, data):
-        tmp = os.path.join(self.root, APPDATA_TMP)
-        target = os.path.join(self.root, APPDATA)
-        with open(tmp, 'w') as tmpfile:
-            yaml.dump(data, tmpfile)
-        shutil.move(tmp, target)
+    def mark(self, path, mark):
+        path = os.path.abspath(path)
+        relative_path = self._get_dataitem_path(path)
+        self.appdata.mark(relative_path, mark)
 
+    def unmark(self, path, mark):
+        path = os.path.abspath(path)
+        relative_path = self._get_dataitem_path(path)
+        self.appdata.unmark(relative_path, mark)
 
     def _get_dataitem_path(self, path):
         """get relative path from <dsroot>/data"""
         return os.path.relpath(path, os.path.join(self.root, DATADIR))
-
-    def _load_appdata(self):
-        yamlpath = os.path.join(os.path.join(self.root, DSROOT, 'appdata.yaml'))
-        try:
-            with open(yamlpath) as f:
-                obj = yaml.safe_load(f)
-        except Exception as e:
-            print('Exception occurred while loading YAML...', file=sys.stderr)
-            print(e, file=sys.stderr)
-            sys.exit(1)
-        self.regs = obj
-        return obj
 
     def _list_dataitem(self):
         return scan_dataitem(self.root)
