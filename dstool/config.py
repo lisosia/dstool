@@ -13,6 +13,11 @@ class AppData():
 
     def list_registered(self):
         return self.regs
+    
+    def list_mark(self, path):
+        reg = self.find_reg(path)
+        assert reg
+        return reg["mark"]
 
     def add_dataitem(self, path, img_dir, ann_dir):
         assert os.path.isdir(os.path.join(self.root, DATADIR, path))

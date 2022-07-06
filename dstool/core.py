@@ -11,6 +11,39 @@ class AppCtx:
     def list_registered_paths(self):
         return [e["path"] for e in self.appdata.list_registered()]
 
+    def status(self):
+        candidates = self._list_dataitem()
+        candidates = [e.path for e in candidates]
+        registered = self.list_registered_paths()
+
+        # set op
+        set_can = set(candidates)
+        set_reg = set(registered)
+
+        reg_ok = set_reg & set_can
+        reg_err = set_reg - set_can
+        can_ok = set_can - set_reg
+        # REGISTERED
+        print(f"[registered] {len(reg_ok)} items")
+        for s in sorted(list(reg_ok)):
+            marks = self.appdata.list_mark(s)
+            marks_str = ''.join([f'({mark})' for mark in marks])
+            print(f'    {s} {marks_str}')
+        # CANDIDATE
+        print(f"[non-registered] {len(can_ok)} items")
+        for s in sorted(list(can_ok)):
+            print(f'    {s}')
+        # ERR
+        if len(reg_err) > 0:
+            print("[WARN] following registered item seems to be not dataitem dir")
+            print("[WARN] the data was removed?")
+            for s in sorted(list(reg_err)):
+                print(f'    {s}')
+
+        #print("candidates", candidates)
+        #print("registered", registered)
+        #print("appdata", app._load_appdata())
+
     def register(self, path):
         # assertion
         path = os.path.abspath(path)
