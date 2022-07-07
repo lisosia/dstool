@@ -60,7 +60,7 @@ class AppData():
         reg["mark"] += [mark_name]
         self._save()
 
-    def unmark(path, mark_name):
+    def unmark(self, path, mark_name):
         """Mark dataitem with strnig. If not marked return False, else return True"""
         reg = self.find_reg(path)
         if not reg:

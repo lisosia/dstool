@@ -1,5 +1,7 @@
 """メインロジック"""
 
+import subprocess
+
 from dstool.common import *
 from dstool.config import *
 
@@ -56,7 +58,7 @@ class AppCtx:
             return
         # check path in possible list
         is_dataitem, img_dir, ann_dir, _ = is_dataitem_dir(path)
-        if not is_dataitem_dir:
+        if not is_dataitem:
             error_exit('it is not dataitem dir')
         # register
         print('register')
@@ -87,6 +89,22 @@ class AppCtx:
         path = os.path.abspath(path)
         relative_path = self._get_dataitem_path(path)
         self.appdata.unmark(relative_path, mark)
+
+    def annotate(self, path):
+        """Start annotation"""
+        path = os.path.abspath(path)
+        is_dataitem, img_dir, ann_dir, _ = is_dataitem_dir(path)
+        if not is_dataitem:
+            error_exit(f'not dataitem dir')
+        # launch
+        img_dir_full = os.path.join(path, img_dir)
+        ann_dir_full = os.path.join(path, ann_dir)
+        cls_file = os.path.join(self.root, DATADIR, 'classes.txt')
+        if not os.path.exists(cls_file):
+            error_exit(f'please define class file file in {cls_file}')
+        cmd = ['labelImg', img_dir_full, cls_file, ann_dir_full]
+        print(cmd)
+        subprocess.Popen(cmd)
 
     def _get_dataitem_path(self, path):
         """get relative path from <dsroot>/data"""
