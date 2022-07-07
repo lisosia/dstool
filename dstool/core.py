@@ -11,36 +11,48 @@ class AppCtx:
         self.appdata = AppData(self.root)
 
     def list_registered_paths(self):
+        """return list(str)"""
         return [e["path"] for e in self.appdata.list_registered()]
+
+    def list_registered(self):
+        """return list(DataItem)"""
+        return [DataItem(e["path"], e["img_dir"], e["ann_dir"])
+                for e in self.appdata.list_registered()]
 
     def status(self):
         candidates = self._list_dataitem()
-        candidates = [e.path for e in candidates]
-        registered = self.list_registered_paths()
+        registered = self.list_registered()
 
+        # map
+        registered_map = dict([[e.path, e] for e in registered])
         # set op
-        set_can = set(candidates)
-        set_reg = set(registered)
+        set_can = set([e.path for e in candidates])
+        set_reg = set([e.path for e in registered])
 
         reg_ok = set_reg & set_can
         reg_err = set_reg - set_can
         can_ok = set_can - set_reg
         # REGISTERED
-        print(f"[registered] {len(reg_ok)} items")
+        print(f"[registered] {len(reg_ok)} folder")
         for s in sorted(list(reg_ok)):
             marks = self.appdata.list_mark(s)
             marks_str = ''.join([f'({mark})' for mark in marks])
-            print(f'    {s} {marks_str}')
+            info = inspect_dataitem(self.root, registered_map[s])
+            num_with_ann = len(info["annotated"])
+            num_without_ann = len(info["not_annotated"])
+            num_total = num_with_ann + num_without_ann
+            print(f'    {s:20s}    {num_with_ann:4d} ann / {num_total:4d} img {marks_str}')
         # CANDIDATE
-        print(f"[non-registered] {len(can_ok)} items")
+        print('')
+        print(f"[non-registered] {len(can_ok)} folder")
         for s in sorted(list(can_ok)):
-            print(f'    {s}')
+            print(f'    {s:20s}')
         # ERR
         if len(reg_err) > 0:
             print("[WARN] following registered item seems to be not dataitem dir")
             print("[WARN] the data was removed?")
             for s in sorted(list(reg_err)):
-                print(f'    {s}')
+                print(f'    {s:20s}')
 
         #print("candidates", candidates)
         #print("registered", registered)
@@ -150,6 +162,10 @@ def is_image_path(path):
     ext = os.path.splitext(path)[1].lower()
     return ext in IMAGE_EXT_ARR
 
+def is_ann_path(path):
+    ext = os.path.splitext(path)[1].lower()
+    return ext in ['.xml']
+
 IMG_DIR_NAMES = ['image', 'images', 'img', 'imgs']
 ANN_DIR_NAMES = ['label', 'labels', 'annotation', 'annotations', 'ann', 'anns']
 
@@ -213,3 +229,19 @@ def _scan_dataitem(dataroot, path_from):
                     os.path.join(dataroot, child), path_from)
         return dataitem_list
 
+def inspect_dataitem(root, d : DataItem):
+    img_dir_full = os.path.join(root, DATADIR, d.path, d.img_dir)
+    imgs = [e.name for e in os.scandir(img_dir_full) if is_image_path(e)]
+    ann_dir_full = os.path.join(root, DATADIR, d.path, d.ann_dir)
+    anns = set([e.name for e in os.scandir(ann_dir_full) if is_ann_path(e)])
+
+    noext_withext_map = dict([e[:-4], e] for e in imgs)
+    imgs_set = set([e[:-4] for e in imgs])
+    anns_set = set([e[:-4] for e in anns])
+    annotated_set = imgs_set & anns_set
+    not_annotated_set = imgs_set - anns_set
+
+    return {
+        "annotated": sorted([noext_withext_map[e] for e in annotated_set]),
+        "not_annotated": sorted([noext_withext_map[e] for e in not_annotated_set]),
+    }
