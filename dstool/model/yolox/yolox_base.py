@@ -1,3 +1,11 @@
+"""Slightly modified version of yolox yolox_base.py
+
+`name="data"` argment is specified COCODataset(name='data')
+
+Derived from
+https://github.com/Megvii-BaseDetection/YOLOX/blob/0.3.0/yolox/exp/yolox_base.py
+"""
+
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 
