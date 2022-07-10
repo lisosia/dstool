@@ -31,7 +31,8 @@ def export_coco(root, dataitems, cat_names, outpath):
     # id
     df_all["id"] = df_all.index
     # img_id
-    df_all["img_id"] = df_all.groupby('img_filename')['id'].transform('max')
+    #df_all["img_id"] = df_all.groupby('img_filename').ngroup()  # assign group index
+    df_all["img_id"] = df_all.groupby('img_filename')['id'].transform('max')  # assign max(row id)
 
     #print( df_all.head(5).to_string() )
     print( df_all.head(15) )
