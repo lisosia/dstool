@@ -155,6 +155,22 @@ class AppCtx:
         # link to data dir
         os.symlink('../../data', os.path.join(self.root, 'export', export_name, 'data'))
 
+
+    def train(self, exported_datadir):
+        """Train"""
+        exported_datadir = os.path.abspath(exported_datadir)
+        relative_dir = os.path.relpath(exported_datadir, self.root)
+        print(relative_dir)
+        import dstool.model.yolox as myolox
+
+        classes = self.load_classes()
+
+        train_name = '20220711'  # TODO
+        train_dir = os.path.join(self.root, 'model', train_name)
+        assert not os.path.exists(train_dir), f"dir should not exists {train_dir}"
+        os.makedirs(train_dir)
+        myolox.train(relative_dir, len(classes), train_dir)
+
     def _normalize_datapath(self, path):
         """Given path and return normalized path and relative path from ./data"""
         path = os.path.abspath(path)
