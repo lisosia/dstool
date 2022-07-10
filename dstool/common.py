@@ -13,7 +13,7 @@ APPDATA = os.path.join(DSROOT, 'appdata.yaml')
 APPDATA_TMP = os.path.join(DSROOT, 'appdata.yaml.tmp')
 DATADIR = 'data'
 
-POSSIBLE_MARKS = ["auto-annotated"]
+POSSIBLE_MARKS = ['auto-annotated', 'testset']
 
 DataItem = namedtuple('DataItem', ('path', 'img_dir', 'ann_dir'))
 

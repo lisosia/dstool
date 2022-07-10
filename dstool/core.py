@@ -4,6 +4,7 @@ import subprocess
 
 from dstool.common import *
 from dstool.config import *
+from dstool.export import *
 
 class AppCtx:
     def __init__(self):
@@ -41,7 +42,7 @@ class AppCtx:
             num_with_ann = len(info["annotated"])
             num_without_ann = len(info["not_annotated"])
             num_total = num_with_ann + num_without_ann
-            print(f'    {s:20s}    {num_with_ann:4d} ann / {num_total:4d} img {marks_str}')
+            print(f'    {s:20s}    {num_with_ann:4d} ann / {num_total:4d} img    {marks_str}')
         # CANDIDATE
         print('')
         print(f"[non-registered] {len(can_ok)} folder")
@@ -49,6 +50,7 @@ class AppCtx:
             print(f'    {s:20s}')
         # ERR
         if len(reg_err) > 0:
+            print('')
             print("[WARN] following registered item seems to be not dataitem dir")
             print("[WARN] the data was removed?")
             for s in sorted(list(reg_err)):
@@ -117,6 +119,42 @@ class AppCtx:
         cmd = ['labelImg', img_dir_full, cls_file, ann_dir_full]
         print(cmd)
         subprocess.Popen(cmd)
+
+    def export(self):
+        """Export registered data as COCO dataset
+        
+        Split into train/valld/test. test is dataitems marked as testset
+        """
+        dataitems = self.appdata.list_registered()
+        dataitems_trainval = [e for e in dataitems if not 'testset' in e["mark"]]
+        dataitems_test = [e for e in dataitems if 'testset' in e["mark"]]
+        print(f'trainval folders {len(dataitems_trainval)}')
+        print(f'test folders {len(dataitems_test)}')
+
+        # cat_names
+        cat_names = ['apple', 'banana', 'orange']  #TODO
+
+        # export-dir
+        export_name = '20220710-coco'  # TODO
+        export_dir = os.path.join(self.root, 'export', export_name, 'annotations')
+        os.makedirs(export_dir)
+
+        # export trainval
+        outpath = os.path.join(export_dir, "trainval.json")
+        export_coco(self.root, dataitems_trainval, cat_names, outpath)
+
+        # export test
+        outpath = os.path.join(export_dir, "test.json")
+        export_coco(self.root, dataitems_test, cat_names, outpath)
+
+        # link to data dir
+        os.symlink('../../data', os.path.join(self.root, 'export', export_name, 'data'))
+
+    def _normalize_datapath(self, path):
+        """Given path and return normalized path and relative path from ./data"""
+        path = os.path.abspath(path)
+        relative_path = self._get_dataitem_path(path)
+        return path, relative_path
 
     def _get_dataitem_path(self, path):
         """get relative path from <dsroot>/data"""

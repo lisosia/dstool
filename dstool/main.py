@@ -32,7 +32,9 @@ def command_annotate(arg):
     app.annotate(arg.datadir)
 
 def command_export(arg):
-    pass
+    app = AppCtx()
+    app.export()
+
 def command_train(arg):
     pass
 def command_auto_annotate(arg):
@@ -70,6 +72,9 @@ def main():
     parser_add = subparsers.add_parser('annotate', help='see `annotate -h`')
     parser_add.add_argument('datadir', help='data dir')
     parser_add.set_defaults(handler=command_annotate)
+    # [subcommand] export
+    parser_add = subparsers.add_parser('export', help='see `export -h`')
+    parser_add.set_defaults(handler=command_export)
 
     # コマンドライン引数をパースして対応するハンドラ関数を実行
     args = parser.parse_args()
