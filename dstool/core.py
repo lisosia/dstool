@@ -120,6 +120,10 @@ class AppCtx:
         print(cmd)
         subprocess.Popen(cmd)
 
+    def load_classes(self):
+        l = open(os.path.join(self.root, DATADIR, 'classes.txt')).read()
+        return [e for e in l.splitlines() if e != '']
+
     def export(self):
         """Export registered data as COCO dataset
         
@@ -132,7 +136,8 @@ class AppCtx:
         print(f'test folders {len(dataitems_test)}')
 
         # cat_names
-        cat_names = ['apple', 'banana', 'orange']  #TODO
+        cat_names = self.load_classes()
+        print('cat names: ', cat_names)
 
         # export-dir
         export_name = '20220710-coco'  # TODO
