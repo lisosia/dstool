@@ -1,1 +1,3 @@
 labelImg
+torch
+git+https://github.com/Megvii-BaseDetection/YOLOX.git@main#egg=yolox
