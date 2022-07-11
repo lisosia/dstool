@@ -169,7 +169,9 @@ class AppCtx:
         train_dir = os.path.join(self.root, 'model', train_name)
         assert not os.path.exists(train_dir), f"dir should not exists {train_dir}"
         os.makedirs(train_dir)
-        myolox.train(relative_dir, len(classes), train_dir)
+
+        m = myolox.Model(classes)
+        m.train(relative_dir, train_dir)
 
     def _normalize_datapath(self, path):
         """Given path and return normalized path and relative path from ./data"""
