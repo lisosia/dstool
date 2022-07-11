@@ -157,7 +157,10 @@ class AppCtx:
 
 
     def train(self, exported_datadir):
-        """Train"""
+        """Train
+        
+        :param exported_datadir: exported dir which includes data/ and annotations/*.json
+        """
         exported_datadir = os.path.abspath(exported_datadir)
         relative_dir = os.path.relpath(exported_datadir, self.root)
         print(relative_dir)
@@ -170,8 +173,14 @@ class AppCtx:
         assert not os.path.exists(train_dir), f"dir should not exists {train_dir}"
         os.makedirs(train_dir)
 
+        print(f'Train dir is {train_dir}')
+
         m = myolox.Model(classes)
         m.train(relative_dir, train_dir)
+
+    def auto_annotate(self, path, train_dir):
+        """Auto annotate not annotated imgs in path using model in train_dir"""
+        pass
 
     def _normalize_datapath(self, path):
         """Given path and return normalized path and relative path from ./data"""
