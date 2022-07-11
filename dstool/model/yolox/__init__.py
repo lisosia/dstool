@@ -3,6 +3,8 @@
 import os
 from string import Template
 
+from dstool import model
+
 EXP_NAME = 'exp001'
 EXP_PATH = 'exp001.py'
 IS_FP16 = False
@@ -68,16 +70,21 @@ class Model:
         # pred
         outputs, img_info = self.predictor.inference(img_path)
         bboxes, cls, scores, = predictor_visual(outputs[0], img_info)
-        print("box", bboxes[:3])
-        print("cls", cls[:3])
-        print("scores", scores[:3])
-        if True:  # check
+
+        result = []
+        for box, cls, score in zip(bboxes, cls, scores):
+            result.append(model.DetectOutout(box, cls, score))
+        #print(result)
+
+        if False:  # check
             import cv2
             i = cv2.imread(img_path)
             for box, cls, score in zip(bboxes, cls, scores):
                 cv2.rectangle(i, (int(box[0]), int(box[1])), (int(box[2]), int(box[3])), (255))
             cv2.imshow("WINNAME", i)
             cv2.waitKey(0)
+
+        return result
 
 # raw output to img coordinate box
 # from https://github.com/Megvii-BaseDetection/YOLOX/blob/419778480ab6ec0590e5d3831b3afb3b46ab2aa3/tools/demo.py#L168
@@ -95,7 +102,7 @@ def predictor_visual(output, img_info):
     cls = output[:, 6]
     scores = output[:, 4] * output[:, 5]
 
-    return (bboxes, cls, scores)
+    return (bboxes.numpy(), cls.numpy(), scores.numpy())
 
 
 # test
