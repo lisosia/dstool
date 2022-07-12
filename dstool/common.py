@@ -12,7 +12,8 @@ DSROOT = '.dstool'
 APPDATA = os.path.join(DSROOT, 'appdata.yaml')
 APPDATA_TMP = os.path.join(DSROOT, 'appdata.yaml.tmp')
 DATADIR = 'data'
-
+MODELDIR = 'model'
+EXPORTDIR = 'export'
 POSSIBLE_MARKS = ['auto-annotated', 'testset']
 
 DataItem = namedtuple('DataItem', ('path', 'img_dir', 'ann_dir'))

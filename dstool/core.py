@@ -1,5 +1,7 @@
 """メインロジック"""
 
+import datetime
+import string
 import subprocess
 
 from dstool.common import *
@@ -126,6 +128,14 @@ class AppCtx:
         l = open(os.path.join(self.root, DATADIR, 'classes.txt')).read()
         return [e for e in l.splitlines() if e != '']
 
+    def _gen_export_name(self):
+        yyyymmdd = datetime.date.today().strftime("%Y%m%d")
+        for alpha in string.ascii_uppercase:
+            export_name = yyyymmdd + '-' + alpha
+            if not os.path.exists(os.path.join(self.root, EXPORTDIR, export_name)):
+                return export_name
+        error_exit(f'path exists in model dir: {export_name}')
+
     def export(self):
         """Export registered data as COCO dataset
         
@@ -142,7 +152,7 @@ class AppCtx:
         print('cat names: ', cat_names)
 
         # export-dir
-        export_name = '20220710-coco'  # TODO
+        export_name = self._gen_export_name()
         export_dir = os.path.join(self.root, 'export', export_name, 'annotations')
         os.makedirs(export_dir)
 
@@ -157,6 +167,15 @@ class AppCtx:
         # link to data dir
         os.symlink('../../data', os.path.join(self.root, 'export', export_name, 'data'))
 
+        print(f'annotate export to {EXPORTDIR}/{export_name}')
+
+    def _gen_train_name(self):
+        yyyymmdd = datetime.date.today().strftime("%Y%m%d")
+        for alpha in string.ascii_uppercase:
+            train_name = yyyymmdd + '-' + alpha
+            if not os.path.exists(os.path.join(self.root, MODELDIR, train_name)):
+                return train_name
+        error_exit(f'path exists in model dir: {train_name}')
 
     def train(self, exported_datadir):
         """Train
@@ -170,7 +189,7 @@ class AppCtx:
 
         classes = self.load_classes()
 
-        train_name = '20220711'  # TODO
+        train_name = self._gen_train_name()
         train_dir = os.path.join(self.root, 'model', train_name)
         assert not os.path.exists(train_dir), f"dir should not exists {train_dir}"
         os.makedirs(train_dir)
