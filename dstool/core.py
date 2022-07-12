@@ -6,6 +6,7 @@ from dstool.common import *
 from dstool.config import *
 from dstool.export import *
 from dstool.util import *
+from dstool.voc_export import *
 
 class AppCtx:
     def __init__(self):
@@ -187,9 +188,29 @@ class AppCtx:
         dets = m.infer(model_dir, img_path)
         show_inference(img_path, dets, classes)
 
-    def auto_annotate(self, path, train_dir):
+    def auto_annotate(self, path, model_dir):
         """Auto annotate not annotated imgs in path using model in train_dir"""
-        pass
+        # model
+        import dstool.model.yolox as myolox
+        classes = self.load_classes()
+        m = myolox.Model(classes)
+        # check datadir
+        is_dataitem, img_dir, ann_dir, _ = is_dataitem_dir(path)
+        if not is_dataitem:
+            error_exit('it is not dataitem dir')
+        img_dir_full = os.path.join(path, img_dir)
+        ann_dir_full = os.path.join(path, ann_dir)
+        # start annotation
+        for f in os.scandir(img_dir_full):
+            if f.is_dir(): continue
+            if not is_image_path(f.name): continue
+            ann_name = os.path.splitext(f.name)[0] + '.xml'
+            ann_path = os.path.join(ann_dir_full, ann_name)
+            if os.path.exists(ann_path):
+                print(f'skip alrady annotated {ann_name}')
+                continue
+            dets = m.infer(model_dir, f.path)
+            voc_export(f.path, ann_path, classes, dets)
 
     def _normalize_datapath(self, path):
         """Given path and return normalized path and relative path from ./data"""

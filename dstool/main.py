@@ -44,7 +44,8 @@ def command_infer(arg):
     app.infer(arg.model_dir, arg.img_path)
 
 def command_auto_annotate(arg):
-    pass
+    app = AppCtx()
+    app.auto_annotate(arg.datadir, arg.model_dir)
 
 def main():
     parser = argparse.ArgumentParser(description='dstool command')
@@ -90,6 +91,11 @@ def main():
     parser_add.add_argument('model_dir', help='model dir')
     parser_add.add_argument('img_path', help='img path to test inference')
     parser_add.set_defaults(handler=command_infer)
+    # [subcommand] test-infer
+    parser_add = subparsers.add_parser('auto-annotate', help='see `auto-annotate -h`')
+    parser_add.add_argument('datadir', help='data dir')
+    parser_add.add_argument('model_dir', help='model dir')
+    parser_add.set_defaults(handler=command_auto_annotate)
 
     # コマンドライン引数をパースして対応するハンドラ関数を実行
     args = parser.parse_args()
