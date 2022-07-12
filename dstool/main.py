@@ -39,6 +39,10 @@ def command_train(arg):
     app = AppCtx()
     app.train(arg.exported_datadir)
 
+def command_infer(arg):
+    app = AppCtx()
+    app.infer(arg.model_dir, arg.img_path)
+
 def command_auto_annotate(arg):
     pass
 
@@ -81,6 +85,11 @@ def main():
     parser_add = subparsers.add_parser('train', help='see `train -h`')
     parser_add.add_argument('exported_datadir', help='data dir')
     parser_add.set_defaults(handler=command_train)
+    # [subcommand] test-infer
+    parser_add = subparsers.add_parser('infer', help='see `infer -h`')
+    parser_add.add_argument('model_dir', help='model dir')
+    parser_add.add_argument('img_path', help='img path to test inference')
+    parser_add.set_defaults(handler=command_infer)
 
     # コマンドライン引数をパースして対応するハンドラ関数を実行
     args = parser.parse_args()

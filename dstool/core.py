@@ -5,6 +5,7 @@ import subprocess
 from dstool.common import *
 from dstool.config import *
 from dstool.export import *
+from dstool.util import *
 
 class AppCtx:
     def __init__(self):
@@ -177,6 +178,14 @@ class AppCtx:
 
         m = myolox.Model(classes)
         m.train(relative_dir, train_dir)
+
+    def infer(self, model_dir, img_path):
+        """Test inference using model in model_dir"""
+        import dstool.model.yolox as myolox
+        classes = self.load_classes()
+        m = myolox.Model(classes)
+        dets = m.infer(model_dir, img_path)
+        show_inference(img_path, dets, classes)
 
     def auto_annotate(self, path, train_dir):
         """Auto annotate not annotated imgs in path using model in train_dir"""

@@ -36,7 +36,7 @@ class Model:
         print(f'cd {out_dir} && python3 -m yolox.tools.train -f exp001.py -d 1 -b 8 -o -c ../yolox_s.pth')
 
     def infer(self, out_dir, img_path):
-        """Infer
+        """Infer and return list[DetectOutput]
         
         :param out_dir: out_dir when train. e.g. model/20220710
         """
@@ -71,11 +71,6 @@ class Model:
         outputs, img_info = self.predictor.inference(img_path)
         bboxes, cls, scores, = predictor_visual(outputs[0], img_info)
 
-        result = []
-        for box, cls, score in zip(bboxes, cls, scores):
-            result.append(model.DetectOutout(box, cls, score))
-        #print(result)
-
         if False:  # check
             import cv2
             i = cv2.imread(img_path)
@@ -84,6 +79,10 @@ class Model:
             cv2.imshow("WINNAME", i)
             cv2.waitKey(0)
 
+        result = []
+        for box, cls, score in zip(bboxes, cls, scores):
+            result.append(model.DetectOutout(box, cls, score))
+        #print(result)
         return result
 
 # raw output to img coordinate box
