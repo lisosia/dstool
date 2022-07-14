@@ -1,5 +1,6 @@
 """メインロジック"""
 
+import glob
 import datetime
 import string
 import subprocess
@@ -136,11 +137,13 @@ class AppCtx:
         yyyymmdd = datetime.date.today().strftime("%Y%m%d")
         for alpha in string.ascii_uppercase:
             export_name = yyyymmdd + '-' + alpha
-            if not os.path.exists(os.path.join(self.root, EXPORTDIR, export_name)):
+            search_path = os.path.join(self.root, EXPORTDIR, export_name + '*')
+            # if export/yyyymmdd-<alphabet>* does not exist, use yyyymmdd-<alphabet>
+            if len(glob.glob(search_path)) == 0:
                 return export_name
         error_exit(f'path exists in model dir: {export_name}')
 
-    def export(self):
+    def export(self, export_name_suffix=''):
         """Export registered data as COCO dataset
         
         Split into train/valld/test. test is dataitems marked as testset
@@ -156,7 +159,7 @@ class AppCtx:
         print('cat names: ', cat_names)
 
         # export-dir
-        export_name = self._gen_export_name()
+        export_name = self._gen_export_name() + export_name_suffix
         export_dir = os.path.join(self.root, 'export', export_name, 'annotations')
         os.makedirs(export_dir)
 
@@ -171,7 +174,8 @@ class AppCtx:
         # link to data dir
         os.symlink('../../data', os.path.join(self.root, 'export', export_name, 'data'))
 
-        print(f'annotate export to {EXPORTDIR}/{export_name}')
+        print(f'annotation set is exported to {EXPORTDIR}/{export_name}')
+        return export_name
 
     def _gen_train_name(self):
         yyyymmdd = datetime.date.today().strftime("%Y%m%d")
@@ -181,11 +185,16 @@ class AppCtx:
                 return train_name
         error_exit(f'path exists in model dir: {train_name}')
 
-    def train(self, exported_datadir):
+    def train(self, exported_datadir=None):
         """Train
         
         :param exported_datadir: exported dir which includes data/ and annotations/*.json
         """
+        # export automatically if export_dir not specified
+        if not exported_datadir:
+            export_name = self.export(export_name_suffix='-autogen')
+            exported_datadir = os.path.join(self.root, EXPORTDIR, export_name)
+
         exported_datadir = os.path.abspath(exported_datadir)
         relative_dir = os.path.relpath(exported_datadir, self.root)
         print(relative_dir)

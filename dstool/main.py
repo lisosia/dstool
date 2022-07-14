@@ -84,7 +84,8 @@ def main():
     parser_add.set_defaults(handler=command_export)
     # [subcommand] train
     parser_add = subparsers.add_parser('train', help='see `train -h`')
-    parser_add.add_argument('exported_datadir', help='data dir')
+    parser_add.add_argument('exported_datadir', nargs='?', default=None,
+        help='exported annotation dir. auto generated if not specified')
     parser_add.set_defaults(handler=command_train)
     # [subcommand] test-infer
     parser_add = subparsers.add_parser('infer', help='see `infer -h`')
