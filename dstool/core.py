@@ -195,6 +195,15 @@ class AppCtx:
             export_name = self.export(export_name_suffix='-autogen')
             exported_datadir = os.path.join(self.root, EXPORTDIR, export_name)
 
+        yolox_s_weight_path = os.path.join(self.root, MODELDIR, 'yolox_s.pth')
+        if not os.path.exists(yolox_s_weight_path):
+            print('download yolox-s weight')
+            import requests
+            URL = "https://github.com/Megvii-BaseDetection/YOLOX/releases/download/0.1.1rc0/yolox_s.pth"
+            response = requests.get(URL)
+            with open(yolox_s_weight_path, "wb") as f:
+                f.write(response.content)
+
         exported_datadir = os.path.abspath(exported_datadir)
         relative_dir = os.path.relpath(exported_datadir, self.root)
         print(relative_dir)
