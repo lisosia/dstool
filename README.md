@@ -64,12 +64,12 @@ dstool status
 ```
 dstool train
 #=> run below command to start training
-#=> cd /home/haito/work/dstool-sample/model/20220714-A && python3 -m yolox.tools.train -f exp001.py -d 1 -b 8 -o -c ../yolox_s.pth
+#=> cd /home/username/work/dstool-sample/model/20220714-A && python3 -m yolox.tools.train -f exp001.py -d 1 -b 8 -o -c ../yolox_s.pth
 ```
 
 run command on another terminal
 ```
-cd /home/haito/work/dstool-sample/model/20220714-A && python3 -m yolox.tools.train -f exp001.py -d 1 -b 8 -o -c ../yolox_s.pth
+cd /home/username/work/dstool-sample/model/20220714-A && python3 -m yolox.tools.train -f exp001.py -d 1 -b 8 -o -c ../yolox_s.pth
 ```
 
 #### 5. auto annotate using a trained model
@@ -86,5 +86,5 @@ dstool annotate model/20220714-A/
 it currenty just print labelImg command
 ```
 #=> run below command to start training
-#=> labelImg /home/haito/work/dstool-sample/data/domainA/set3-formatA/image /home/haito/work/dstool-sample/data/classes.txt /home/haito/work/dstool-sample/data/domainA/set3-formatA/label
+#=> labelImg /home/username/work/dstool-sample/data/domainA/set3-formatA/image /home/username/work/dstool-sample/data/classes.txt /home/username/work/dstool-sample/data/domainA/set3-formatA/label
 ```
