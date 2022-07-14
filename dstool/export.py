@@ -18,7 +18,8 @@ def export_coco(root, dataitems, cat_names, outpath):
         df = dataset.df.copy(deep=True)
         # mod img_folder, img_filename (folder, file_name in coco)
         df.img_folder = '.'
-        prefix = os.path.join(d["path"], d["img_dir"])
+        # final "" is added so that prefix ends with "/"
+        prefix = os.path.join(d["path"], d["img_dir"], "")
         df.img_filename = prefix + df.img_filename
         df_array.append(df)
 
