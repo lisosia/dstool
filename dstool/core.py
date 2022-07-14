@@ -121,8 +121,12 @@ class AppCtx:
         if not os.path.exists(cls_file):
             error_exit(f'please define class file file in {cls_file}')
         cmd = ['labelImg', img_dir_full, cls_file, ann_dir_full]
-        print(cmd)
-        subprocess.Popen(cmd)
+
+        # print commnad insteamd of launching process
+        # to avoid qt error (temporary workaround)
+        print('run below command to start training')
+        print(' '.join(cmd))
+        #subprocess.Popen(cmd)
 
     def load_classes(self):
         l = open(os.path.join(self.root, DATADIR, 'classes.txt')).read()
