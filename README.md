@@ -40,8 +40,7 @@ dstool accepts some folder structure
 
 #### 3. register data
 
-register two folders
- (we do not register 3rd folder assuming the 3rd folder does not have annotations)
+register data folders
  
 ```
 dstool register --all
@@ -74,7 +73,7 @@ cd /home/username/work/dstool-sample/model/20220714-A && python3 -m yolox.tools.
 dstool auto-annotate data/domainA/set3-formatA/ model/20220714-A/
 ```
 
-#### 6. dstool annotate to check and fix auto genarated annotation
+#### 6. check and fix auto genarated annotation
 ```
 dstool annotate model/20220714-A/
 ```
