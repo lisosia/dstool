@@ -33,7 +33,7 @@ def command_annotate(arg):
 
 def command_export(arg):
     app = AppCtx()
-    app.export()
+    app.export(arg.separate_testset)
 
 def command_train(arg):
     app = AppCtx()
@@ -81,6 +81,7 @@ def main():
     parser_add.set_defaults(handler=command_annotate)
     # [subcommand] export
     parser_add = subparsers.add_parser('export', help='see `export -h`')
+    parser_add.add_argument('--separate-testset', default=False, action='store_true', help='split into train/valid/test instead of train/valid. test set data is from folders marked as testset')
     parser_add.set_defaults(handler=command_export)
     # [subcommand] train
     parser_add = subparsers.add_parser('train', help='see `train -h`')

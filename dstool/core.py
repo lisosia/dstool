@@ -143,17 +143,14 @@ class AppCtx:
                 return export_name
         error_exit(f'path exists in model dir: {export_name}')
 
-    def export(self, export_name_suffix=''):
+    def export(self, separate_testset=False, export_name_suffix=''):
         """Export registered data as COCO dataset
         
         Split into train/valld/test. test is dataitems marked as testset
-        """
-        dataitems = self.appdata.list_registered()
-        dataitems_trainval = [e for e in dataitems if not 'testset' in e["mark"]]
-        dataitems_test = [e for e in dataitems if 'testset' in e["mark"]]
-        print(f'trainval folders {len(dataitems_trainval)}')
-        print(f'test folders {len(dataitems_test)}')
 
+        :param separate_testset: if True, split into train/valid/test using "testset" mark. if False, split into train/valid using all data
+        :param export_name_suffix: name suffix
+        """
         # cat_names
         cat_names = self.load_classes()
         print('cat names: ', cat_names)
@@ -163,13 +160,21 @@ class AppCtx:
         export_dir = os.path.join(self.root, 'export', export_name, 'annotations')
         os.makedirs(export_dir)
 
-        # export trainval
-        outpath = os.path.join(export_dir, "trainval.json")
-        export_coco(self.root, dataitems_trainval, cat_names, outpath)
-
-        # export test
-        outpath = os.path.join(export_dir, "test.json")
-        export_coco(self.root, dataitems_test, cat_names, outpath)
+        dataitems = self.appdata.list_registered()
+        if separate_testset:
+            print('split into train/valid using all data. testset mark will be ignored.')
+            dataitems_trainval = [e for e in dataitems if not 'testset' in e["mark"]]
+            dataitems_test = [e for e in dataitems if 'testset' in e["mark"]]
+            if len(dataitems_test) == 0:
+                error_exit('--separate_testset specified but no data is markded as testset')
+            print(f'trainval folders {len(dataitems_trainval)}')
+            print(f'test folders {len(dataitems_test)}')
+            # export trainval / test
+            export_coco_train_valid(self.root, dataitems_trainval, cat_names, export_dir)
+            export_coco_test(self.root, dataitems_test, cat_names, export_dir)
+        else:
+            print('split into train/valid/test using "testset" mark.')
+            export_coco_train_valid(self.root, dataitems, cat_names, export_dir)
 
         # link to data dir
         os.symlink('../../data', os.path.join(self.root, 'export', export_name, 'data'))

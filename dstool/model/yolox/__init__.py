@@ -18,7 +18,7 @@ class Model:
     def train(self, data_dir, out_dir):
         """Train yolox
     
-        :param data_dir: data/ann dir from root. expects data_dir/data & data_dir/annotations/trainval.txt
+        :param data_dir: data/ann dir from root. expects data_dir/data & data_dir/annotations/train.json & valid.json
         :param outdir: output directory
         """
         exp_template_path = os.path.join(os.path.dirname(__file__), 'template.exp001.py')

@@ -17,8 +17,8 @@ class Exp(MyExp):
 
         # Define yourself dataset path
         self.data_dir = "../../$data_dir/"  # yolox loads: datadir / <name> / <filename in ann>
-        self.train_ann = "trainval.json"  # yolox loads: datadir / "annotations" / + self.train_ann
-        self.val_ann = "test.json"
+        self.train_ann = "train.json"  # yolox loads: datadir / "annotations" / + self.train_ann
+        self.val_ann = "valid.json"
 
         self.num_classes = $num_class
 
