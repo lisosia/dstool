@@ -1,5 +1,15 @@
 # dstool : detection dataset management tool
 
+dstool manages VOC format detection dataset.
+It simplifies the process of data annotation and model learning for the detection task.
+
+- recognize multiple folder structures of VOC dataset
+- report the number of images and annotations
+- launch labeling tool `labelImg`
+- split into train/valid(/test) and export as coco dataset
+- train [YOLOX](https://github.com/Megvii-BaseDetection/YOLOX) model
+- auto annotate unlabeled images using trained models
+
 ### Install
 
 ```
