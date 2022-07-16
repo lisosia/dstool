@@ -114,6 +114,18 @@ class AppCtx:
         relative_path = self._get_dataitem_path(path)
         self.appdata.unmark(relative_path, mark)
 
+    def mark_verified(self, path):
+        """Mark all images in datadir as confirmed
+        
+        labelImg recognize annotation as "confirmed" if verified attribute set
+        <annotation verified="yes">...</annotation>
+        """
+        path = os.path.abspath(path)
+        is_dataitem, img_dir, ann_dir, _ = is_dataitem_dir(path)
+        for ann in os.scandir(os.path.join(path, ann_dir)):
+            if not is_ann_path(ann): continue
+            voc_set_verified(ann)
+
     def annotate(self, path):
         """Start annotation"""
         path = os.path.abspath(path)

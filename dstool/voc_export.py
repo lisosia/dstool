@@ -1,6 +1,7 @@
 """VOCフォーマットでエクスポートする"""
 
 from string import Template
+import tempfile
 import xml.etree.ElementTree as ET
 
 import cv2
@@ -75,6 +76,17 @@ def voc_export(img_path, ann_path, classes, detect_output_list):
 
     tree = ET.ElementTree(root)
     tree.write(ann_path)
+
+def voc_set_verified(ann_path):
+    fd, temppath = tempfile.mkstemp(text=True)
+    tree = ET.parse(ann_path)
+    root = tree.getroot()
+    root.set('verified','yes')  # <annotation verified="yes">
+
+    tree.write(temppath)
+    shutil.move(temppath, ann_path)
+    if os.path.exists(temppath):
+        os.remove(temppath)
 
 if __name__ == "__main__":    
     img = "data/set2/test/apple_77.jpg"

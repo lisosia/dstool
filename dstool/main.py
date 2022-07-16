@@ -47,6 +47,10 @@ def command_auto_annotate(arg):
     app = AppCtx()
     app.auto_annotate(arg.datadir, arg.model_dir)
 
+def command_mark_verified(arg):
+    app = AppCtx()
+    app.mark_verified(arg.datadir)
+
 def main():
     parser = argparse.ArgumentParser(description='dstool command')
     subparsers = parser.add_subparsers()
@@ -98,6 +102,10 @@ def main():
     parser_add.add_argument('datadir', help='data dir')
     parser_add.add_argument('model_dir', help='model dir')
     parser_add.set_defaults(handler=command_auto_annotate)
+    # [subcommand] mark-verified
+    parser_add = subparsers.add_parser('mark-verified', help='see `mark-verified -h`')
+    parser_add.add_argument('datadir', help='data dir')
+    parser_add.set_defaults(handler=command_mark_verified)
 
     # コマンドライン引数をパースして対応するハンドラ関数を実行
     args = parser.parse_args()
