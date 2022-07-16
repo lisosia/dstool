@@ -38,7 +38,7 @@ dstool accepts some folder structure
 
 ```
 
-#### 3. register and mark testset
+#### 3. register data
 
 register two folders
  (we do not register 3rd folder assuming the 3rd folder does not have annotations)
