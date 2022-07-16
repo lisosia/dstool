@@ -14,7 +14,7 @@ pip3 install git+https://github.com/lisosia/dstool
 mkdir dstool-example && cd dstool-example && dstool init
 ```
 
-#### 2. copy files and register
+#### 2. prepare files
 
 2-1. make data/classes.txt which includes newline separated labels
 
