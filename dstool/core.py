@@ -251,6 +251,8 @@ class AppCtx:
             error_exit('it is not dataitem dir')
         img_dir_full = os.path.join(path, img_dir)
         ann_dir_full = os.path.join(path, ann_dir)
+        # mark as auto-annotate
+        self.mark(path, "auto-annotated")
         # start annotation
         for f in os.scandir(img_dir_full):
             if f.is_dir(): continue
@@ -262,6 +264,7 @@ class AppCtx:
                 continue
             dets = m.infer(model_dir, f.path)
             voc_export(f.path, ann_path, classes, dets)
+        print('auto-annotate finished')
 
     def _normalize_datapath(self, path):
         """Given path and return normalized path and relative path from ./data"""

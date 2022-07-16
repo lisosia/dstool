@@ -43,7 +43,7 @@ class AppData():
         """Delete item using relative_path from data/"""
         reg = self.find_reg(path)
         if not reg:
-            error_exit(f'Not found: {path}')
+            error_exit(f'Not registered: {path}')
         self.regs.remove(reg)
         self._save()
 
@@ -51,7 +51,7 @@ class AppData():
         """Mark dataitem with strnig. If already marked do nothing"""
         reg = self.find_reg(path)
         if not reg:
-            error_exit(f'Not found: {path}')
+            error_exit(f'Not registered: {path}')
         if not mark_name in POSSIBLE_MARKS:
             error_exit(f'unknown mark name. possbile mark names are {POSSIBLE_MARKS}')
         if mark_name in reg["mark"]:
@@ -64,7 +64,7 @@ class AppData():
         """Mark dataitem with strnig. If not marked return False, else return True"""
         reg = self.find_reg(path)
         if not reg:
-            error_exit(f'Not found: {path}')
+            error_exit(f'Not registered: {path}')
         if not mark_name in POSSIBLE_MARKS:
             error_exit(f'unknown mark name. possbile mark names are {POSSIBLE_MARKS}')
         if not mark_name in reg["mark"]:

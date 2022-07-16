@@ -72,8 +72,6 @@ def voc_export(img_path, ann_path, classes, detect_output_list):
             ymax = int(o.box[3]),
         ))
         root.append(sub)
-    
-    print(root)
 
     tree = ET.ElementTree(root)
     tree.write(ann_path)
