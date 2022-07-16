@@ -44,19 +44,15 @@ register two folders
  (we do not register 3rd folder assuming the 3rd folder does not have annotations)
  
 ```
-dstool register data/set1/train
-dstool register data/set2/test
-dstool mark data/set2/test testset
+dstool register --all
 ```
 
 ```
 dstool status
 #=> [registered] 2 folder
 #=>     set1/train               207 ann /  240 img
-#=>     set2/test                 56 ann /   60 img    (testset)
-#=> 
-#=> [non-registered] 1 folder
-#=>     domainA/set3-formatA
+#=>     set2/test                 56 ann /   60 img
+#=>     domainA/set3-formatA       0 ann /    2 img
 ```
 
 #### 4. train
@@ -78,7 +74,7 @@ cd /home/username/work/dstool-sample/model/20220714-A && python3 -m yolox.tools.
 dstool auto-annotate data/domainA/set3-formatA/ model/20220714-A/
 ```
 
-#### 6. dstool annotate
+#### 6. dstool annotate to check and fix auto genarated annotation
 ```
 dstool annotate model/20220714-A/
 ```
@@ -87,4 +83,28 @@ it currenty just print labelImg command
 ```
 #=> run below command to start training
 #=> labelImg /home/username/work/dstool-sample/data/domainA/set3-formatA/image /home/username/work/dstool-sample/data/classes.txt /home/username/work/dstool-sample/data/domainA/set3-formatA/label
+```
+
+### Tips: Partially annotate images in a folder and let a model to do the rest
+
+```
+# annotate some images then train a model
+dstool annotate data/A
+dstool train
+# mark as "verified" for manually annotated annotations only
+dstool mark-verified data/A
+# auto annotate
+dstool auto-annotate data/A model/B  # auto annotate
+# check and fix auto-annotated annotations
+# manually annotated images can be distinguished as "verified" (green background)
+# in the labelImg GUI
+dstool annotate data/A
+```
+
+### Tips: Separate testset
+
+```
+dstool mark data/domainA/set3-formatA testset
+dstool export --separate-testset
+#=> train/valid/test coco annotate file generated instead of train/valid
 ```
