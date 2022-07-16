@@ -13,7 +13,7 @@ def command_status(arg):
 
 def command_register(arg):
     app = AppCtx()
-    app.register(arg.datadir)
+    app.register(arg.all, arg.datadir)
 
 def command_unregister(arg):
     app = AppCtx()
@@ -63,7 +63,8 @@ def main():
     parser_add.set_defaults(handler=command_status)
     # [subcommand] register
     parser_add = subparsers.add_parser('register', help='see `register -h`')
-    parser_add.add_argument('datadir', help='data dir')
+    parser_add.add_argument('--all', '-a', action='store_true', help='register all candidate folders in data/')
+    parser_add.add_argument('datadir', nargs='*', help='data dir to register')
     parser_add.set_defaults(handler=command_register)
     # [subcommand] unregister
     parser_add = subparsers.add_parser('unregister', help='see `unregister -h`')

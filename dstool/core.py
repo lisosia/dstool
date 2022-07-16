@@ -70,7 +70,23 @@ class AppCtx:
         #print("registered", registered)
         #print("appdata", app._load_appdata())
 
-    def register(self, path):
+    def register(self, add_all, path_arr):
+        """register datadir"""
+        if not add_all and len(path_arr) == 0:
+            error_exit('--all or datadir must be specified')
+
+        if add_all:
+            candidates = [e.path for e in self._list_dataitem()]
+            registered = [e.path for e in self.list_registered()]
+            for path in candidates:
+                if path in registered:
+                    continue
+                self.register_one(os.path.join(self.root, DATADIR, path))
+        else:
+            for path in path_arr:
+                self.register_one(path)
+
+    def register_one(self, path):
         # assertion
         path = os.path.abspath(path)
         assert os.path.isdir(path)
@@ -85,7 +101,7 @@ class AppCtx:
         if not is_dataitem:
             error_exit('it is not dataitem dir')
         # register
-        print('register')
+        print(f'registered {path}')
         self.appdata.add_dataitem(relative_path, img_dir, ann_dir)
 
     def unregister(self, path):
@@ -101,7 +117,7 @@ class AppCtx:
             print('not registered dir')
             return
         # unregister
-        print('register')
+        print(f'unregistered {path}')
         self.appdata.delete_dataitem(relative_path)
 
     def mark(self, path, mark):
