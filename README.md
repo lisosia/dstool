@@ -88,13 +88,14 @@ please run that command in the terminal.
 ### Tips: Partially annotate images in a folder and let a model to do the rest
 
 ```
-# annotate some images then train a model
+# annotate some images
 dstool annotate data/A
-dstool train
 # mark as "verified" for manually annotated annotations only
 dstool mark-verified data/A
-# auto annotate
-dstool auto-annotate data/A model/B  # auto annotate
+# train a model
+dstool train
+# auto annotate (skipping already annotated images)
+dstool auto-annotate data/A model/B
 # check and fix auto-annotated annotations
 # manually annotated images can be distinguished as "verified" (green background)
 # in the labelImg GUI
