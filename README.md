@@ -1,4 +1,4 @@
-# dstool : dataset management tool
+# dstool : detection dataset management tool
 
 ### Install
 
