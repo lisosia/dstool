@@ -1,6 +1,6 @@
 # dstool : detection dataset management tool
 
-dstool manages VOC format detection dataset.
+dstool manages VOC format detection dataset.  
 It simplifies the process of data annotation and model learning for the detection task.
 
 - recognize multiple folder structures of VOC dataset
