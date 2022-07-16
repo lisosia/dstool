@@ -29,8 +29,9 @@ class AppCtx:
         candidates = self._list_dataitem()
         registered = self.list_registered()
 
-        # map
+        # mapping path -> item
         registered_map = dict([[e.path, e] for e in registered])
+        candidate_map = dict([[e.path, e] for e in candidates])
         # set op
         set_can = set([e.path for e in candidates])
         set_reg = set([e.path for e in registered])
@@ -52,7 +53,11 @@ class AppCtx:
         print('')
         print(f"[non-registered] {len(can_ok)} folder")
         for s in sorted(list(can_ok)):
-            print(f'    {s:20s}')
+            info = inspect_dataitem(self.root, candidate_map[s])
+            num_with_ann = len(info["annotated"])
+            num_without_ann = len(info["not_annotated"])
+            num_total = num_with_ann + num_without_ann
+            print(f'    {s:20s}    {num_with_ann:4d} ann / {num_total:4d} img')
         # ERR
         if len(reg_err) > 0:
             print('')
