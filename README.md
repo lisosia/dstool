@@ -73,12 +73,13 @@ cd /home/username/work/dstool-sample/model/20220714-A && python3 -m yolox.tools.
 dstool auto-annotate data/domainA/set3-formatA/ model/20220714-A/
 ```
 
-#### 6. check and fix auto genarated annotation
+#### 6. check and fix auto genarated annotations
 ```
 dstool annotate model/20220714-A/
 ```
 
-it currenty just print labelImg command
+Note that it currenty just print labelImg command.
+please run that command in the terminal.
 ```
 #=> run below command to start training
 #=> labelImg /home/username/work/dstool-sample/data/domainA/set3-formatA/image /home/username/work/dstool-sample/data/classes.txt /home/username/work/dstool-sample/data/domainA/set3-formatA/label
@@ -105,5 +106,5 @@ dstool annotate data/A
 ```
 dstool mark data/domainA/set3-formatA testset
 dstool export --separate-testset
-#=> train/valid/test coco annotate file generated instead of train/valid
+#=> 3 coco-format json (train/valid/test) generated instead of 2 (train/valid)
 ```
