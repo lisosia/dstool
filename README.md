@@ -58,7 +58,7 @@ dstool register --all
 
 ```
 dstool status
-#=> [registered] 2 folder
+#=> [registered] 3 folder
 #=>     set1/train               207 ann /  240 img
 #=>     set2/test                 56 ann /   60 img
 #=>     domainA/set3-formatA       0 ann /    2 img
